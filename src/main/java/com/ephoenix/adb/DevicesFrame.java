@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import com.ephoenix.adb.adb.ADB;
 import com.ephoenix.adb.adb.ADBParser;
 import com.ephoenix.adb.adb.CommandLine;
+import com.ephoenix.adb.scrcpy.Scrcpy;
 
 public class DevicesFrame extends JInternalFrame {
 
@@ -120,7 +121,9 @@ public class DevicesFrame extends JInternalFrame {
 					Application.createFrame(name, id);
 
 					table.clearSelection();
-
+                                        
+                                        runScrcpy(id);
+                                        
 				}
 			}
 
@@ -129,6 +132,10 @@ public class DevicesFrame extends JInternalFrame {
 		JScrollPane pane = new JScrollPane(table);
 		return pane;
 	}
+        
+        public void runScrcpy(String id){
+            Scrcpy.checkConnection();
+        }
 
 	@Override
 	public void dispose() {

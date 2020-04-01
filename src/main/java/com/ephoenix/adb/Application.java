@@ -106,9 +106,17 @@ public class Application {
 
         // Set up the first menu item.
         JMenuItem menuItem = new JMenuItem("Thiết bị");
+        menuItem.setMnemonic(KeyEvent.VK_E);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+        menuItem.setActionCommand("devices");
+        menuItem.addActionListener(new MyAction());
+        document.add(menuItem);
+
+        // Set up the first menu item.
+        menuItem = new JMenuItem("Thêm mới");
         menuItem.setMnemonic(KeyEvent.VK_N);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK));
-        menuItem.setActionCommand("devices");
+        menuItem.setActionCommand("new");
         menuItem.addActionListener(new MyAction());
         document.add(menuItem);
 
@@ -143,7 +151,11 @@ public class Application {
 
         // React to menu selections.
         public void actionPerformed(ActionEvent e) {
-
+            
+            if ("new".equals(e.getActionCommand())) { // new
+                addNewDeviceFrame();
+            }
+            
             if ("devices".equals(e.getActionCommand())) { // new
                 createDeviceFrame();
             }
@@ -156,15 +168,15 @@ public class Application {
 
     protected void addNewDeviceFrame() {
 
-        if (!devices.isVisible()) {
+        if (!addDevicesFrame.isVisible()) {
 
-            devices.setVisible(true);
+            addDevicesFrame.setVisible(true);
 
-            desktop.add(devices);
+            desktop.add(addDevicesFrame);
 
             try {
 
-                devices.setSelected(true);
+                addDevicesFrame.setSelected(true);
 
             } catch (java.beans.PropertyVetoException e) {
 
