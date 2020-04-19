@@ -11,14 +11,13 @@ public class Scrcpy {
 
     private static List<String> devices = new ArrayList<String>();
 
-    public static void main(String[] args) {
-        System.out.println(checkConnection());
-        System.out.println(devices);
+    
 
-    }
-
-    public static void runScrcpy() {
-        Cmd.run("D:\\workspace_adb\\scrcpy\\scrcpy.exe");
+    public static void runScrcpy(String id) {
+       ScrcpyWorker worker = new ScrcpyWorker(id);
+       
+       worker.start();
+       
     }
 
     public static void connect(String ip) {

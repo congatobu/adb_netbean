@@ -5,6 +5,15 @@
  */
 package com.ephoenix.adb;
 
+
+import com.ephoenix.adb.util.FilesHelper;
+import com.ephoenix.adb.util.Utils;
+import java.util.LinkedList;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author mini-pc
@@ -16,6 +25,75 @@ public class ScriptFrame extends javax.swing.JInternalFrame {
      */
     public ScriptFrame() {
         initComponents();
+
+        ListSelectionModel select = scriptsTable.getSelectionModel();
+
+        select.addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+
+                int row = scriptsTable.getSelectedRow();
+
+                if (row >= 0) {
+
+
+                    String name = (String) scriptsTable.getValueAt(row, 0);
+
+                    String id = (String) scriptsTable.getValueAt(row, 1);
+
+                    Application.log(name + " - " + id);
+
+
+                    scriptsTable.clearSelection();
+                    
+                    Application.createScriptBuilder(name);
+                    
+                    
+                }
+            }
+
+        });
+
+    }
+
+    public void init() {
+
+        String[] files = FilesHelper.getAllFile(Constant.SCRIPTS_URL, "txt");
+
+        if (files == null) {
+
+            return;
+
+        }
+
+        DefaultTableModel tm = (DefaultTableModel) scriptsTable.getModel();
+
+        tm.setRowCount(0);
+
+        for (String file : files) {
+
+           String path  = Constant.SCRIPTS_URL + "\\" + file;
+
+            LinkedList<String> context = Utils.readFile(path);
+
+            String connect = context.removeFirst();
+
+            connect = connect.replaceAll("\\s+", " ");
+
+            String[] data = Utils.validText(connect);
+            
+            String[] row = new String[5];
+            
+            System.arraycopy(data, 0, row, 1, 4);
+            
+            row[0] = file;
+            
+            tm.addRow(row);
+
+        }
+
+        scriptsTable.setModel(tm);
+        tm.fireTableDataChanged();
     }
 
     /**
@@ -29,23 +107,27 @@ public class ScriptFrame extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        scriptsTable = new javax.swing.JTable();
 
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
+        setTitle("Scripts");
         setPreferredSize(new java.awt.Dimension(800, 800));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        scriptsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Tên", "Application", "url", ""
+                "File", "Application", "url", "package", "note"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, true
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -56,7 +138,7 @@ public class ScriptFrame extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(scriptsTable);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -79,7 +161,7 @@ public class ScriptFrame extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 194, Short.MAX_VALUE))
+                .addGap(0, 184, Short.MAX_VALUE))
         );
 
         pack();
@@ -89,6 +171,6 @@ public class ScriptFrame extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable scriptsTable;
     // End of variables declaration//GEN-END:variables
 }

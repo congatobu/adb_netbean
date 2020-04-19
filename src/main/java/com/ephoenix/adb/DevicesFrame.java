@@ -1,23 +1,14 @@
 package com.ephoenix.adb;
 
-import java.awt.BorderLayout;
+import com.ephoenix.adb.scrcpy.Scrcpy;
 import java.beans.PropertyVetoException;
-import java.util.Collection;
-
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-import com.ephoenix.adb.adb.ADB;
-import com.ephoenix.adb.adb.ADBParser;
-import com.ephoenix.adb.adb.CommandLine;
-import com.ephoenix.adb.scrcpy.Scrcpy;
 
 public class DevicesFrame extends JInternalFrame {
 
@@ -26,7 +17,7 @@ public class DevicesFrame extends JInternalFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JTable table;
+	public static JTable table;
 	
 
 	public DevicesFrame() {
@@ -56,47 +47,21 @@ public class DevicesFrame extends JInternalFrame {
 	}
 
 	public JScrollPane getTable() {
-		CommandLine commandLine = new CommandLine();
-
-		ADBParser adbParser = new ADBParser();
-
-		ADB adb = new ADB(commandLine, adbParser);
-
-		Collection<Device> devices = adb.getDevicesConnected();
-
-		Object data[][] = new Object[devices.size()][4];
+		
 
 		String column[] = { "TÊN MÁY", "ID", "LOẠI MÁY", "STATUS" };
 
 		Application.log("adb run");
 
-		int i = 0;
-		for (Device device : devices) {
-
-			data[i][0] = device.getName();
-			data[i][1] = device.getId();
-			data[i][2] = device.getType();
-
-			if (device.isConnected()) {
-
-				data[i][3] = "Kết Nối";
-
-			} else {
-
-				data[i][3] = "Mất Kết Nối";
-
-			}
-
-			i++;
-		}
+		
 
 		table = new JTable();
 
-//		table.setCellSelectionEnabled(true);
-
-		DefaultTableModel tm = new DefaultTableModel(data, column);
-
-		table.setModel(tm);
+		DefaultTableModel tm = (DefaultTableModel) table.getModel();
+                
+                tm.setColumnIdentifiers(column);
+		
+                table.setModel(tm);
 
 		table.setFillsViewportHeight(true);
 
@@ -134,7 +99,7 @@ public class DevicesFrame extends JInternalFrame {
 	}
         
         public void runScrcpy(String id){
-            Scrcpy.checkConnection();
+            Scrcpy.runScrcpy(id);
         }
 
 	@Override

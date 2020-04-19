@@ -1,5 +1,6 @@
 package com.ephoenix.adb;
 
+import com.ephoenix.adb.adb.ADBWorker;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -28,9 +29,15 @@ public class Application {
 
     private AddDevicesFrame addDevicesFrame = new AddDevicesFrame();
 
+    private ScriptFrame scriptFrame = new ScriptFrame();
+
+    private static BuildScriptFrame buildScriptFrame = new BuildScriptFrame();
+
     private static HashMap<String, String> devicesFrames = new HashMap<String, String>();
 
     private static int ids = 0;
+
+    private ADBWorker worker = new ADBWorker();
 
     /**
      * Launch the application.
@@ -95,6 +102,9 @@ public class Application {
 
         createDeviceFrame();
 
+        //------------------------------------------------
+        worker.start();
+
     }
 
     protected JMenuBar createMenuBar() {
@@ -129,6 +139,18 @@ public class Application {
         document.add(menuItem);
 
         // -----------------------------------------------------------
+        JMenu script = new JMenu("Script");
+        script.setMnemonic(KeyEvent.VK_S);
+
+        JMenuItem scriptList = new JMenuItem("Danh sách Script");
+        scriptList.setMnemonic(KeyEvent.VK_C);
+        scriptList.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
+        scriptList.setActionCommand("scripts");
+        scriptList.addActionListener(new MyAction());
+
+        script.add(scriptList);
+
+        // -----------------------------------------------------------
         JMenu setup = new JMenu("Cài đặt");
         setup.setMnemonic(KeyEvent.VK_S);
 
@@ -142,6 +164,7 @@ public class Application {
 
         // -----------------------------------------------------------
         menuBar.add(document);
+        menuBar.add(script);
         menuBar.add(setup);
 
         return menuBar;
@@ -151,14 +174,19 @@ public class Application {
 
         // React to menu selections.
         public void actionPerformed(ActionEvent e) {
-            
+
             if ("new".equals(e.getActionCommand())) { // new
                 addNewDeviceFrame();
             }
-            
+
             if ("devices".equals(e.getActionCommand())) { // new
                 createDeviceFrame();
             }
+
+            if ("scripts".equals(e.getActionCommand())) { // new
+                scriptsFrame();
+            }
+
             if ("clear".equals(e.getActionCommand())) { // new
                 clearLog();
             }
@@ -202,6 +230,24 @@ public class Application {
         }
     }
 
+    protected void scriptsFrame() {
+
+        if (!scriptFrame.isVisible()) {
+
+            scriptFrame.setVisible(true);
+            scriptFrame.init();
+            desktop.add(scriptFrame);
+
+            try {
+
+                scriptFrame.setSelected(true);
+
+            } catch (java.beans.PropertyVetoException e) {
+
+            }
+        }
+    }
+
     public static void createFrame(String name, String device) {
 
         if (devicesFrames.containsKey(device)) {
@@ -225,6 +271,24 @@ public class Application {
             mframe.setSelected(true);
 
         } catch (java.beans.PropertyVetoException e) {
+        }
+    }
+
+    public static void createScriptBuilder(String name) {
+
+        if (!buildScriptFrame.isVisible()) {
+
+            buildScriptFrame.setVisible(true);
+            buildScriptFrame.init(name);
+            desktop.add(buildScriptFrame);
+
+            try {
+
+                buildScriptFrame.setSelected(true);
+
+            } catch (java.beans.PropertyVetoException e) {
+
+            }
         }
     }
 

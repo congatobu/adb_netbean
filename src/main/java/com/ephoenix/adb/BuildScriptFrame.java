@@ -5,6 +5,11 @@
  */
 package com.ephoenix.adb;
 
+import com.ephoenix.adb.util.FilesHelper;
+import com.ephoenix.adb.util.Utils;
+import java.util.LinkedList;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author mini-pc
@@ -18,6 +23,35 @@ public class BuildScriptFrame extends javax.swing.JInternalFrame {
         initComponents();
     }
 
+    void init(String file) {
+
+        if (file == null || file.equals("")) {
+
+            return;
+
+        }
+
+        DefaultTableModel tm = (DefaultTableModel) script.getModel();
+
+        tm.setRowCount(0);
+
+        String path = Constant.SCRIPTS_URL + "\\" + file;
+
+        LinkedList<String> context = Utils.readFile(path);
+
+        for (String string : context) {
+
+            string = string.replaceAll("\\s+", " ");
+
+            String[] data = Utils.validText(string);
+
+             tm.addRow(data);
+        }
+
+        script.setModel(tm);
+        tm.fireTableDataChanged();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,13 +63,15 @@ public class BuildScriptFrame extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        script = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
+        setClosable(true);
+        setMaximizable(true);
         setPreferredSize(new java.awt.Dimension(800, 800));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        script.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -43,13 +79,13 @@ public class BuildScriptFrame extends javax.swing.JInternalFrame {
                 "Hành động", "x", "y", "time"
             }
         ));
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
+        script.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(script);
+        if (script.getColumnModel().getColumnCount() > 0) {
+            script.getColumnModel().getColumn(0).setResizable(false);
+            script.getColumnModel().getColumn(1).setResizable(false);
+            script.getColumnModel().getColumn(2).setResizable(false);
+            script.getColumnModel().getColumn(3).setResizable(false);
         }
 
         jButton1.setText("Cancel");
@@ -101,6 +137,7 @@ public class BuildScriptFrame extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable script;
     // End of variables declaration//GEN-END:variables
+
 }
